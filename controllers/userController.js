@@ -59,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 // * LOGIN USER
 const loginUser = asyncHandler(async (req, res) => {
-  res.send('Hyemin is a fat bitch');
+  res.send('testing');
 });
 
 module.exports = {
