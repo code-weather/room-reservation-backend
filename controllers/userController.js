@@ -34,6 +34,15 @@ const registerUser = asyncHandler(async (req, res) => {
   // Generate Token
   const token = generateToken(user._id);
 
+  // Send HTTP-only cookie
+  res.cookie('token', token, {
+    path: '/',
+    httpOnly: true,
+    expires: new Date(Date.now() + 1000 * 86400),
+    sameSite: 'none',
+    secure: true,
+  });
+
   if (user) {
     const { _id, name, email } = user;
     res.status(201).json({
@@ -48,6 +57,12 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+// * LOGIN USER
+const loginUser = asyncHandler(async (req, res) => {
+  res.send('Hyemin is a fat bitch');
+});
+
 module.exports = {
   registerUser,
+  loginUser,
 };

@@ -4,12 +4,14 @@ const cors = require('cors');
 const userRouter = require('./routes/userRoutes');
 const mongoose = require('mongoose');
 const errorHandler = require('./middleware/errorMiddleware');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser())
 
 app.use('/api/users', userRouter);
 
