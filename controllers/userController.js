@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
@@ -93,20 +93,45 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Display after logging in
   if (user && matchPassword) {
-    const { _id, name, email } = user
+    const { _id, name, email } = user;
     res.status(200).json({
       _id,
       name,
       email,
       token,
-    })
+    });
   } else {
-    res.status(400)
-    throw new Error('Invalid email and/or password')
+    res.status(400);
+    throw new Error('Invalid email and/or password');
+  }
+});
+
+// * LOGOUT USER
+const logout = asyncHandler(async (req, res) => {
+  res.cookie('token', '', { maxAge: 0 });
+  return res.status(200).json({ message: 'Successfully Logged Out' });
+});
+
+// * GET USER DATA
+const getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    const { _id, name, email } = user;
+    res.status(200).json({
+      _id,
+      name,
+      email,
+    });
+  } else {
+    res.status(400);
+    throw new Error('User cannot be found');
   }
 });
 
 module.exports = {
   registerUser,
   loginUser,
+  logout,
+  getUser,
 };
