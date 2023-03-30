@@ -146,10 +146,23 @@ const loginStatus = asyncHandler(async (req, res) => {
   return res.json(false);
 });
 
+// * UPDATE USER
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    const { name, email } = user;
+    user.email = email;
+    user.name = req.body.name || name;
+
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
   logout,
   getUser,
   loginStatus,
+  updateUser,
 };

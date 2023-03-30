@@ -23,6 +23,20 @@ const userSchema = mongoose.Schema(
       minLength: [6, 'Password have to be 6 characters or more'],
       required: [true, 'HEY!! YOO!!! Enter a PASSWORD'],
     },
+    phone: {
+      type: String,
+      default: '+1',
+      required: [true, 'Please enter a phone number'],
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: ['Admin', 'Member', 'Deacon', 'Elder', 'Pastor'],
+    },
+    approved: {
+      type: Boolean,
+      required: true,
+    }
   },
   {
     timestamp: true,
