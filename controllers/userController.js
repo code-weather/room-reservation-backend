@@ -10,10 +10,10 @@ const generateToken = (id) => {
 
 // * REGISTER NEW USER
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone } = req.body;
 
   // Account validation
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !phone) {
     res.status(500);
     throw new Error('Please fill in all required fields');
   }
@@ -21,16 +21,33 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error('Password gotta be 6 characters or more');
   }
 
-  // Check if user's email already exists
-  const userExists = await User.findOne({ email });
+  const phoneRegex = /^[\d\+\-\(\)]{10,}$/;
 
-  if (userExists) {
+  if (phone.length !== 12 && !phoneRegex.test(phone)) {
+    throw new Error('Please enter a valid phone number');
+  }
+
+  // Check if user's email and/or phone already exists
+  const emailExists = await User.findOne({ email });
+  const phoneExists = await User.findOne({ phone });
+
+  if (emailExists && phoneExists) {
+    res.status(400);
+    throw new Error('The email and phone number are already in use');
+  }
+
+  if (emailExists) {
     res.status(400);
     throw new Error('The email is already in use');
   }
 
+  if (phoneExists) {
+    res.status(400);
+    throw new Error('The phone number is already in use');
+  }
+
   // Create new user
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, phone });
 
   // Generate Token
   const token = generateToken(user._id);
@@ -45,11 +62,12 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const { _id, name, email } = user;
+    const { _id, name, email, phone } = user;
     res.status(201).json({
       _id,
       name,
       email,
+      phone,
       token,
     });
   } else {
@@ -93,11 +111,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Display after logging in
   if (user && matchPassword) {
-    const { _id, name, email } = user;
+    const { _id, name, email, phone } = user;
     res.status(200).json({
       _id,
       name,
       email,
+      phone,
       token,
     });
   } else {
@@ -117,11 +136,12 @@ const getUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    const { _id, name, email } = user;
+    const { _id, name, email, phone } = user;
     res.status(200).json({
       _id,
       name,
       email,
+      phone,
     });
   } else {
     res.status(400);
@@ -151,10 +171,21 @@ const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    const { name, email } = user;
+    const { name, email, phone } = user;
     user.email = email;
     user.name = req.body.name || name;
+    user.phone = req.body.phone || phone;
 
+    const updatedUser = await user.save();
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
   }
 });
 

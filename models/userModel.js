@@ -24,19 +24,26 @@ const userSchema = mongoose.Schema(
       required: [true, 'HEY!! YOO!!! Enter a PASSWORD'],
     },
     phone: {
-      type: String,
-      default: '+1',
+      type: Number,
       required: [true, 'Please enter a phone number'],
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return /^\d{10}$/.test(v);
+        },
+        message: (props) =>
+          `${props.value} is not a valid phone number! Please enter 10 digits only.`,
+      },
     },
-    role: {
-      type: String,
-      required: true,
-      enum: ['Admin', 'Member', 'Deacon', 'Elder', 'Pastor'],
-    },
-    approved: {
-      type: Boolean,
-      required: true,
-    }
+    // role: {
+    //   type: String,
+    //   required: true,
+    //   enum: ['Admin', 'Deacon', 'Elder', 'Pastor'],
+    // },
+    // approved: {
+    //   type: Boolean,
+    //   required: true,
+    // },
   },
   {
     timestamp: true,
