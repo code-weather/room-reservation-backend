@@ -10,13 +10,14 @@ const generateToken = (id) => {
 
 // * REGISTER NEW USER
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, phone, role } = req.body;
 
   // Account validation
-  if (!name || !email || !password || !phone) {
+  if (!name || !email || !password || !phone || !role) {
     res.status(500);
     throw new Error('Please fill in all required fields');
   }
+
   if (password.length < 6) {
     throw new Error('Password gotta be 6 characters or more');
   }
@@ -47,7 +48,15 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // Create new user
-  const user = await User.create({ name, email, password, phone });
+  const approved = false; // Set approval status to false as default
+  const user = await User.create({
+    name,
+    email,
+    password,
+    phone,
+    role,
+    approved,
+  });
 
   // Generate Token
   const token = generateToken(user._id);
@@ -62,12 +71,14 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const { _id, name, email, phone } = user;
+    const { _id, name, email, phone, role, approved } = user;
     res.status(201).json({
       _id,
       name,
       email,
       phone,
+      approved,
+      role,
       token,
     });
   } else {

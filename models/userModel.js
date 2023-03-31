@@ -35,15 +35,15 @@ const userSchema = mongoose.Schema(
           `${props.value} is not a valid phone number! Please enter 10 digits only.`,
       },
     },
-    // role: {
-    //   type: String,
-    //   required: true,
-    //   enum: ['Admin', 'Deacon', 'Elder', 'Pastor'],
-    // },
-    // approved: {
-    //   type: Boolean,
-    //   required: true,
-    // },
+    role: {
+      type: String,
+      enum: ['Admin', 'Deacon', 'Elder', 'Pastor'],
+      required: true,
+    },
+    approved: {
+      type: Boolean,
+      required: true,
+    },
   },
   {
     timestamp: true,
