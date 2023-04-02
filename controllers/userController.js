@@ -200,6 +200,13 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+// * CHANGE PASSWORD
+const changePassword = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  
+  // TESTING GIT PULL
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -207,4 +214,5 @@ module.exports = {
   getUser,
   loginStatus,
   updateUser,
+  changePassword,
 };
