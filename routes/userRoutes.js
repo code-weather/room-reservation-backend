@@ -7,6 +7,8 @@ const {
   loginStatus,
   updateUser,
   changePassword,
+  forgotPassword,
+  resetPassword,
 } = require('../controllers/userController');
 const protect = require('../middleware/authMiddleware');
 const router = express.Router();
@@ -19,6 +21,8 @@ router.get('/getuser', protect, getUser);
 router.get('/loggedin', protect, loginStatus);
 router.patch('/updateuser', protect, updateUser);
 router.post('/changepassword', protect, changePassword);
+router.patch('/forgotpassword', forgotPassword);
+router.patch('/resetpassword', resetPassword);
 
 // Admin routes
 // router.post('/:id/approve', approveUser);

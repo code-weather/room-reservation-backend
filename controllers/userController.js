@@ -223,11 +223,19 @@ const changePassword = asyncHandler(async (req, res) => {
   if (user && matchPassword) {
     user.password = newPassword;
     await user.save();
-    res.status(200).send('Password change successful')
+    res.status(200).send('Password change successful');
   } else {
     res.status(400);
     throw new Error('Password do not match');
   }
+});
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  res.send('hello mate');
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  res.send('reset password');
 });
 
 module.exports = {
@@ -238,4 +246,6 @@ module.exports = {
   loginStatus,
   updateUser,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };
